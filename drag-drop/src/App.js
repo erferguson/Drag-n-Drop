@@ -1,25 +1,17 @@
 import './App.css';
 
+import DragNDrop from './Components/DragNDrop'
+
 const data = [
-  {title: "group 1", items: ['1', '2', '3']},
-  {title: "group 2", items: ['4', '5']}
+  {title: "Group 1", items: ['1', '2', '3']},
+  {title: "Group 2", items: ['4', '5']}
 ]
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div className="drag-n-drop">
-          {data.map((grp, grpI) => (
-          <div key={grp.title} className="dnd-group">
-            {grp.items.map((item, itemI) => (
-              <div draggable key={item} className="dnd-item">
-                {item}
-              </div>
-            ))}
-          </div>
-        ))}
-        </div>
+        <DragNDrop data={data} />
         
         {/* <div className="drag-n-drop">
           <div className="dnd-group">
