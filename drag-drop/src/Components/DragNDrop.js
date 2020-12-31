@@ -12,20 +12,34 @@ function DragNDrop({data}){
     const dragNode = useRef()
 
     const handleDragStart = (e, params) => {
-        console.log('drag starting', params)
+        console.log('drag starting..', params)
         dragItem.current = params
         dragNode.current = e.target 
-        dragNode.current.addEventListener('dragend', handelDragEnd)
+        dragNode.current.addEventListener('dragend', handleDragEnd)
         setTimeout(() => {
             setDragging(true)
         }, 0);
-        
     }
 
-    const handelDragEnd = () => {
+    const handleDragEnter = (e, params) => {
+        console.log('Entering drag..', params)
+        const currentItem = dragItem.current
+        if(e.target !== dragNode.current){
+            console.log('TARGET NOT THE SAME')
+            setList(oldList => {
+                let newList = JSON.parse(JSON.stringify(oldList))
+                newList[params.grpI].items.splice(params.itemI, 0, newList[currentItem.grpI].items.splice(currentItem.itemI, 1)[0])
+                // dragItem.current
+                dragItem.current = params
+                return newList
+            })
+        }
+    }
+
+    const handleDragEnd = () => {
         console.log('Ending Drag...')
         setDragging(false)
-        dragNode.current.removeEventListener('dragend', handelDragEnd)
+        dragNode.current.removeEventListener('dragend', handleDragEnd)
         dragItem.current = null
         dragNode.current = null
     }
@@ -41,12 +55,17 @@ function DragNDrop({data}){
     return (
         <div className="drag-n-drop"> 
           {list.map((grp, grpI) => (
-          <div key={grp.title} className="dnd-group">
+          <div 
+            key={grp.title} 
+            className="dnd-group"
+            onDragEnter={dragging && !grp.items.length ? (e) => handleDragEnter(e, {grpI, itemI: 0}) : null }
+          >
             <div className="group-title">{grp.title}</div>
             {grp.items.map((item, itemI) => (
               <div 
               draggable 
-              onDragStart={(e) => {handleDragStart(e, {grpI, itemI})}} 
+              onDragStart={(e) => {handleDragStart(e, {grpI, itemI})}}
+              onDragEnter = {dragging ? (e) => (handleDragEnter(e,{grpI, itemI})): null}
               key={item} 
               className={dragging ? getStyles({grpI, itemI}) : "dnd-item"}
               >
