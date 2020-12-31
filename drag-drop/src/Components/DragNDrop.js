@@ -16,11 +16,18 @@ function DragNDrop({data}){
         dragItem.current = params
         dragNode.current = e.target 
         dragNode.current.addEventListener('dragend', handelDragEnd)
-        setDragging(true)
+        setTimeout(() => {
+            setDragging(true)
+        }, 0);
+        
     }
 
     const handelDragEnd = () => {
         console.log('Ending Drag...')
+        setDragging(false)
+        dragNode.current.removeEventListener('dragend', handelDragEnd)
+        dragItem.current = null
+        dragNode.current = null
     }
 
     const getStyles = (params) => {
